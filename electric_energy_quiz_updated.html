@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101827">
+<title>技術・電気エネルギー変換クイズ</title>
+<style>
+:root{--bg:#0b1220;--panel:#141f31;--panel2:#1b2940;--line:#2b3b54;--text:#edf4ff;--muted:#9eb0c9;--cyan:#55d6d0;--blue:#6c9cff;--green:#56d69a;--red:#ff7185;--gold:#ffc96b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#1c3551 0,transparent 42%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer;color:inherit;border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:12px 15px;transition:.16s}button:hover{border-color:var(--cyan);transform:translateY(-1px)}button:disabled{opacity:.4;cursor:not-allowed;transform:none}
+header{max-width:1100px;margin:auto;padding:22px 22px 10px;display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{display:flex;align-items:center;gap:12px}.logo{width:43px;height:43px;border-radius:13px;background:linear-gradient(135deg,var(--cyan),var(--blue));display:grid;place-items:center;color:#071321;font-size:23px;font-weight:900}.brand h1{font-size:18px;margin:0}.brand small{color:var(--muted)}
+main{max-width:1100px;margin:auto;padding:18px 22px 50px}.screen{display:none}.screen.active{display:block}.hero{padding:25px 0 20px}.eyebrow{color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:.15em}.hero h2{font-size:clamp(28px,5vw,42px);margin:8px 0}.hero p{color:var(--muted);margin:0;line-height:1.7}
+.panel{background:linear-gradient(145deg,rgba(27,41,64,.96),rgba(18,29,46,.96));border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 18px 45px #0003}.setup-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.setting{margin-bottom:17px}.setting label,.label{display:block;color:var(--muted);font-size:13px;font-weight:700;margin:0 0 9px}.choices{display:flex;flex-wrap:wrap;gap:8px}.choice{padding:10px 13px;font-size:14px}.choice.selected{background:linear-gradient(135deg,#1d6870,#345c91);border-color:var(--cyan);box-shadow:0 0 0 1px #55d6d055 inset}.startrow{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:8px}.primary{background:linear-gradient(135deg,#37bfc0,#477fe2);border:0;color:#061321;font-weight:900;padding:14px 25px}.primary:hover{filter:brightness(1.08)}.note{font-size:12px;color:var(--muted);line-height:1.65}
+.game-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}.stats{display:flex;gap:8px;flex-wrap:wrap}.stat{background:var(--panel);border:1px solid var(--line);padding:9px 12px;border-radius:12px;font-size:13px}.stat b{color:var(--cyan);font-variant-numeric:tabular-nums}.progress{height:7px;background:#25344b;border-radius:99px;overflow:hidden;margin:0 0 18px}.progress>div{height:100%;background:linear-gradient(90deg,var(--cyan),var(--blue));width:0;transition:width .25s}
+.question-card{padding:clamp(18px,3vw,30px)}.q-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:12px}.tag{padding:5px 9px;border-radius:99px;background:#233b51;color:var(--cyan);font-weight:800}.q-text{font-size:clamp(20px,3vw,27px);font-weight:800;line-height:1.55;margin:20px 0}.subtext{color:var(--muted);font-size:14px;line-height:1.65;margin-top:-8px;margin-bottom:17px}
+.answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.answer{min-height:60px;text-align:left;display:flex;align-items:center;gap:12px;padding:13px}.letter{flex:0 0 30px;height:30px;border-radius:9px;background:#2a3b55;display:grid;place-items:center;color:var(--cyan);font-weight:900}.answer.correct{border-color:var(--green);background:#153c38}.answer.wrong{border-color:var(--red);background:#482632}.answer:disabled{opacity:1}
+.type-answer{width:100%;background:#0d1727;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:15px;font-size:17px;outline:none}.type-answer:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #55d6d022}.answer-actions{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap}
+.feedback{margin-top:16px;padding:15px;border-radius:13px;background:#0d1929;border:1px solid var(--line);line-height:1.7;display:none}.feedback.show{display:block}.feedback.good{border-color:#3a9e7b}.feedback.bad{border-color:#b44e64}.feedback strong{display:block;margin-bottom:4px}.game-bottom{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:17px}.skip{background:transparent;color:var(--muted)}.next{background:var(--cyan);color:#071321;border:0;font-weight:900;min-width:145px}
+.tools-layout{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:14px;align-items:start}.calculator{position:sticky;top:12px}.calc-display{background:#091321;border:1px solid var(--line);border-radius:10px;padding:12px;text-align:right;font-size:23px;min-height:53px;overflow:hidden;font-variant-numeric:tabular-nums}.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:9px}.calc-grid button{padding:10px 2px;border-radius:9px}.calc-grid .op{color:var(--cyan)}.calc-grid .equals{background:var(--cyan);color:#071321;font-weight:900}
+.result{text-align:center;padding:35px 20px}.score{font-size:56px;font-weight:950;color:var(--cyan);margin:8px}.result h2{font-size:30px;margin:8px}.result p{color:var(--muted);line-height:1.7}.result-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:22px}.review{margin-top:18px;text-align:left}.review-item{padding:13px;border-top:1px solid var(--line);line-height:1.6}.review-item small{color:var(--muted)}
+.toast{color:var(--gold);font-size:12px;min-height:18px;margin-top:8px}
+@media(max-width:760px){.setup-grid{grid-template-columns:1fr}.tools-layout{grid-template-columns:1fr}.calculator{position:static}.calc-grid{grid-template-columns:repeat(4,1fr)}.answers{grid-template-columns:1fr}.game-top{align-items:flex-start;flex-direction:column}.startrow{align-items:flex-start;flex-direction:column}.startrow button{width:100%}header{padding:15px 16px}main{padding:10px 14px 35px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="logo">⚡</div><div><h1>技術・電気エネルギー変換</h1><small>TECHNOLOGY QUIZ / 中学校 技術科</small></div></div><button id="homeBtn" style="display:none" onclick="goHome()">⌂ 設定へ</button></header>
+<main>
+<section id="setup" class="screen active">
+ <div class="hero"><div class="eyebrow">TECHNOLOGY / ENERGY CONVERSION</div><h2>技術の電気分野を攻略しよう。</h2><p>工具・電子部品・電気の基礎・安全な使い方を、問題を解きながら身につけよう。</p></div>
+ <div class="panel">
+  <div class="setup-grid">
+   <div>
+    <div class="setting"><label>① 問題の種類</label><div class="choices" data-group="category">
+     <button class="choice selected" data-value="basic">基礎問題</button><button class="choice" data-value="applied">応用問題</button><button class="choice" data-value="both">両方</button><button class="choice" data-value="calculation">計算</button><button class="choice" data-value="important">重要</button>
+    </div></div>
+    <div class="setting"><label>② 難易度</label><div class="choices" data-group="difficulty">
+     <button class="choice selected" data-value="normal">ノーマル</button><button class="choice" data-value="hard">ハード</button>
+    </div><div class="note">ハードは選択肢なしの記述式。答えを自分で入力する。計算問題はノーマルのみ。</div></div>
+   </div>
+   <div>
+    <div class="setting"><label>③ ゲームモード</label><div class="choices" data-group="mode">
+     <button class="choice selected" data-value="normal">ノーマル</button><button class="choice" data-value="survival">サバイバル</button><button class="choice" data-value="time">タイムアタック</button>
+    </div><div class="note">タイムアタックは60秒。サバイバルは不正解・スキップで終了。</div></div>
+    <div class="setting"><label>④ 問題数</label><div class="choices" data-group="count">
+     <button class="choice selected" data-value="10">10問</button><button class="choice" data-value="20">20問</button><button class="choice" data-value="all">全問</button>
+    </div></div>
+   </div>
+  </div>
+  <div class="startrow"><div class="note">※計算は電気製品の消費電力の合計や、許容電流を考える問題。ハードは記述式で、計算問題は出ません。<div id="available" class="toast"></div></div><button class="primary" onclick="startGame()">ゲームスタート　→</button></div>
+ </div>
+</section>
+<section id="game" class="screen">
+ <div class="game-top"><div class="stats"><div class="stat">問題 <b id="counter">1 / 10</b></div><div class="stat">正解 <b id="score">0</b></div><div class="stat" id="timerBox">残り <b id="timer">60</b> 秒</div><div class="stat">連続正解 <b id="streak">0</b></div></div><button class="skip" onclick="skipQuestion()">スキップ ↷</button></div>
+ <div class="progress"><div id="progressBar"></div></div>
+ <div class="tools-layout"><div class="panel question-card">
+  <div class="q-meta"><span class="tag" id="qCategory">基礎</span><span id="qLevel">初級</span><span id="qType">選択問題</span></div>
+  <div class="q-text" id="question"></div><div class="subtext" id="promptExtra"></div>
+  <div id="choiceArea" class="answers"></div>
+  <div id="textArea" style="display:none"><input id="typed" class="type-answer" autocomplete="off" placeholder="答えを入力..." /><div class="answer-actions"><button class="primary" onclick="submitTyped()">回答する ↵</button><button onclick="document.getElementById('typed').value=''">クリア</button></div></div>
+  <div id="feedback" class="feedback"></div>
+  <div class="game-bottom"><span class="note" id="progressHint">正解を選ぼう。</span><button id="nextBtn" class="next" onclick="nextQuestion()" style="display:none">次の問題へ →</button></div>
+ </div>
+ <aside class="panel calculator" id="calculator"><div style="display:flex;justify-content:space-between;align-items:center"><b>電卓</b><small style="color:var(--muted)">CALCULATOR</small></div><div class="calc-display" id="calcDisplay">0</div><div class="calc-grid">
+ <button onclick="calcInput('AC')" class="op">AC</button><button onclick="calcInput('⌫')" class="op">⌫</button><button onclick="calcInput('%')" class="op">%</button><button onclick="calcInput('÷')" class="op">÷</button>
+ <button onclick="calcInput('7')">7</button><button onclick="calcInput('8')">8</button><button onclick="calcInput('9')">9</button><button onclick="calcInput('×')" class="op">×</button>
+ <button onclick="calcInput('4')">4</button><button onclick="calcInput('5')">5</button><button onclick="calcInput('6')">6</button><button onclick="calcInput('-')" class="op">−</button>
+ <button onclick="calcInput('1')">1</button><button onclick="calcInput('2')">2</button><button onclick="calcInput('3')">3</button><button onclick="calcInput('+')" class="op">＋</button>
+ <button onclick="calcInput('0')" style="grid-column:span 2">0</button><button onclick="calcInput('.')">.</button><button onclick="calcInput('=')" class="equals">＝</button>
+ </div><div class="note" style="margin-top:9px">キーボードの数字・＋−×÷・Enter・Backspaceにも対応。</div></aside></div>
+</section>
+<section id="result" class="screen"><div class="panel result"><div class="eyebrow">RESULT</div><h2 id="resultTitle">結果発表</h2><div class="score" id="finalScore">0 / 10</div><p id="resultText"></p><div class="result-actions"><button class="primary" onclick="startGame()">もう一度挑戦</button><button onclick="goHome()">設定に戻る</button></div><div class="review" id="review"></div></div></section>
+</main>
+<script>
+const bank=[
+{c:"basic",l:1,t:"choice",q:"自然界に存在する電気の例として、正しい組み合わせは？",o:["静電気と雷","電流と電圧","電力と電力量","抵抗と電力"],a:0,e:"自然界には静電気や雷などの電気現象が存在する。"},
+{c:"basic",l:1,t:"choice",q:"電気の流れを何という？",o:["電圧","電流","電力","抵抗"],a:1,e:"電気の流れを電流といい、単位はアンペア（A）。"},
+{c:"basic",l:1,t:"choice",q:"電流の単位を表す記号は？",o:["V","W","A","Ω"],a:2,e:"電流の単位はアンペア。記号はA。"},
+{c:"basic",l:1,t:"choice",q:"電流を押し流すはたらきをするものは？",o:["電圧","電力量","抵抗","電力"],a:0,e:"電圧は電流を流そうとするはたらき。単位はボルト（V）。"},
+{c:"basic",l:1,t:"choice",q:"電圧の単位は？",o:["アンペア（A）","ワット（W）","オーム（Ω）","ボルト（V）"],a:3,e:"電圧の単位はボルト（V）。"},
+{c:"basic",l:1,t:"choice",q:"流れる向きが時間とともに変化する電流は？",o:["直流","交流","静電気","誘導電流"],a:1,e:"交流は電流の向きが周期的に変化する。"},
+{c:"basic",l:1,t:"choice",q:"一定の向きに流れる電流は？",o:["交流","静電気","直流","放電"],a:2,e:"直流は電流の向きが一定。乾電池などが代表例。"},
+{c:"basic",l:1,t:"choice",q:"日本の家庭用コンセントに流れている電流は？",o:["直流","交流","静電気","電磁誘導"],a:1,e:"家庭用コンセントは交流。"},
+{c:"basic",l:1,t:"choice",q:"日本の家庭用コンセントの電圧は一般に何V？",o:["12V","50V","100V","2000V"],a:2,e:"日本の一般的な家庭用コンセントは100V。"},
+{c:"basic",l:1,t:"choice",q:"電気をつくることを何という？",o:["発電","放電","充電","電解"],a:0,e:"電気をつくることを発電という。"},
+{c:"basic",l:1,t:"choice",q:"半田は何と何の合金？",o:["銅と亜鉛","鉄と炭素","金と銀","すずと鉛"],a:3,e:"半田は、すずと鉛を主成分とする合金。"},
+{c:"basic",l:1,t:"choice",q:"電気工作で、電線の被覆をむくときに使う工具は？",o:["ニッパー","ワイヤーストリッパー","はんだごて","ペンチ"],a:1,e:"ワイヤーストリッパーは電線の被覆をむく工具。"},
+{c:"basic",l:1,t:"choice",q:"電線などを切るときに使う工具は？",o:["ワイヤーストリッパー","はんだごて","ニッパー","ドライバー"],a:2,e:"ニッパーは電線や部品の足などを切る工具。"},
+{c:"basic",l:1,t:"choice",q:"金属どうしをはんだで接合するときに使う工具は？",o:["はんだごて","ニッパー","ワイヤーストリッパー","ラジオペンチ"],a:0,e:"はんだごてで、はんだを溶かして接合する。"},
+{c:"basic",l:1,t:"choice",q:"小さな部品をつかんだり、電線を曲げたりするときに使う工具は？",o:["ラジオペンチ","ニッパー","ワイヤーストリッパー","はんだごて"],a:0,e:"ラジオペンチは先端が細く、小さな部品をつかんだり電線を曲げたりするのに使う。"},
+{c:"basic",l:1,t:"choice",q:"ラジオペンチの特徴として正しいものは？",o:["先端が細く、細かい作業に向いている","電線の被覆だけをむく","はんだを溶かす","電圧を測る"],a:0,e:"先端が細いので、狭い場所で部品をつかむなどの細かい作業に向いている。"},
+
+{c:"basic",l:1,t:"choice",q:"色の帯で抵抗値を表す電子部品は？",o:["トランジスタ","固定抵抗器","電解コンデンサー","LED"],a:1,e:"固定抵抗器には色の帯があり、抵抗値を読み取れる。"},
+{c:"basic",l:1,t:"choice",q:"電解コンデンサーの特徴として正しいものは？",o:["極性がある","色の帯で抵抗値を示す","光を出す","電流を増幅する"],a:0,e:"電解コンデンサーには＋と−の極性がある。"},
+{c:"basic",l:1,t:"choice",q:"フルカラーLEDの特徴は？",o:["抵抗値を調整する","電流を増幅する","複数の色を発光できる","電気を蓄えるだけ"],a:2,e:"フルカラーLEDは複数の色を組み合わせて発光できる。"},
+{c:"basic",l:1,t:"choice",q:"固定抵抗器の色の帯が表しているものは？",o:["電圧","電流","電力","抵抗値"],a:3,e:"色の帯から抵抗値を読み取る。"},
+{c:"applied",l:2,t:"choice",q:"自然界にある電気を、そのまま有効利用しにくい理由として最も適切なのは？",o:["発生する場所や時刻、量を人間が自由に調整しにくいから","電気は必ず熱に変わるから","自然界の電気にはエネルギーがないから","電気は金属の中にしか存在しないから"],a:0,e:"自然現象の電気は発生のタイミングや量を制御しにくく、安定して利用しづらい。"},
+{c:"applied",l:2,t:"choice",q:"家庭用コンセントの電流が交流であることの説明として正しいものは？",o:["向きが常に一定","向きが時間とともに変化する","電流が流れない時間だけでできている","電圧が必ず0Vになる"],a:1,e:"交流は流れる向きが時間によって変化する電流。"},
+{c:"applied",l:2,t:"choice",q:"電解コンデンサーを回路につけるとき、特に注意することは？",o:["色の帯を上にする","抵抗値を読む","極性を間違えない","必ず水につける"],a:2,e:"電解コンデンサーは極性があるため、＋と−を確認する。"},
+{c:"applied",l:2,t:"choice",q:"家庭で電気製品を同時に使いすぎると起こる可能性があることは？",o:["電圧が無限に上がる","電気が直流に変わる","コンセントが発電する","許容電流を超え、ブレーカーが作動することがある"],a:3,e:"合計電流が許容電流を超えると、ブレーカーが作動したり、発熱などの危険が生じたりする。"},
+{c:"applied",l:2,t:"choice",q:"たこ足配線とは、どのような使い方？",o:["一つのコンセントからテーブルタップなどを使い、多くの電気製品をつなぐこと","電線を束ねて保管すること","コンセントを使わず乾電池で動かすこと","電気製品を一台ずつ別の部屋で使うこと"],a:0,e:"一つのコンセントにテーブルタップなどをつなぎ、多くの電気製品を接続する使い方をたこ足配線という。"},
+{c:"applied",l:2,t:"choice",q:"たこ足配線で特に注意することは？",o:["つないだ機器の合計電力・電流がタップの定格を超えないようにする","プラグの色をそろえる","電気製品の台数を必ず奇数にする","コードを束ねて使う"],a:0,e:"つないだ機器の合計電力や電流が許容値を超えると、発熱や火災につながるおそれがある。"},
+{c:"important",l:1,t:"choice",q:"たこ足配線を安全に使うために適切なのは？",o:["合計消費電力や許容電流を確認し、定格内で使う","差し込み口が余っていれば何台でもつなぐ","許容電流を超えても短時間なら問題ない","コードを束ねて熱を逃がさないようにする"],a:0,e:"差し込み口の数だけで判断せず、タップの定格と接続する機器の合計を確認する。"},
+
+{c:"applied",l:2,t:"choice",q:"テーブルタップの許容電流が15Aのとき、使い方として適切なのは？",o:["合計電流が15Aを超えないようにする","必ず15Aちょうど使う","電力の合計だけを見ればよい","何台つないでも一台ずつなら安全"],a:0,e:"つないだ機器の合計電流が許容電流を超えないようにする。"},
+{c:"applied",l:2,t:"choice",q:"家庭の電気料金を社会全体で抑えるための取り組みとして適切なのは？",o:["必要のない照明もつけ続ける","省エネルギー機器の普及や節電を進める","電気を使う時間を増やす","使っていない機器を常に待機状態にする"],a:1,e:"省エネルギー機器の普及や、社会全体での節電が電力消費の抑制につながる。"},
+{c:"calculation",l:2,t:"choice",q:"ドライヤー1200W・掃除機500W・ラジカセ30W・パソコン100Wを同時に使う。消費電力の合計は？",o:["1530W","1730W","1830W","1930W"],a:2,e:"1200＋500＋30＋100＝1830W。まず、それぞれの消費電力を足す。"},
+{c:"calculation",l:2,t:"choice",q:"消費電力の合計が1830W、コンセントの電圧が100Vのとき、流れる電流は？",o:["1.83A","8.3A","18.3A","183A"],a:2,e:"電流は電力÷電圧。1830÷100＝18.3A。"},
+{c:"calculation",l:2,t:"choice",q:"合計電流18.3Aの電気製品を、許容電流15Aのテーブルタップにつないだ。何A超えている？",o:["1.8A","2.3A","3.3A","5.3A"],a:2,e:"18.3−15＝3.3A。許容電流を超えている。"},
+{c:"calculation",l:2,t:"choice",q:"ドライヤー・掃除機・ラジカセ・パソコンを同時に使い、合計電流が18.3Aになった。許容電流15Aのテーブルタップではどうなる？",o:["許容電流以内なので安全","許容電流を超えるため危険","電流が必ず0Aになる","電圧が200Vになる"],a:1,e:"合計電流は18.3Aで、許容電流15Aを超える。使いすぎると発熱やブレーカーの作動などにつながる危険がある。"},
+{c:"important",l:1,t:"choice",q:"電流・電圧・電力の単位の正しい組み合わせは？",o:["電流A・電圧V・電力W","電流V・電圧A・電力W","電流W・電圧V・電力A","電流A・電圧W・電力V"],a:0,e:"電流はA、電圧はV、電力はW。"},
+{c:"important",l:1,t:"choice",q:"電気の使いすぎによる危険を防ぐために大切なことは？",o:["タップの許容電流を確認する","コードを束ねたまま使う","定格を超えて使う","水にぬれた手で操作する"],a:0,e:"機器の合計電流とテーブルタップの許容電流を確認する。"},
+{c:"important",l:1,t:"choice",q:"電解コンデンサーとフルカラーLEDに共通する、取り付け時の注意点は？",o:["どちらも色の帯で抵抗値を読む","極性や端子の向きを確認する","どちらも電線を切る工具である","どちらも交流専用である"],a:1,e:"電解コンデンサーとLEDは、向きや端子を確認して回路に取り付ける。"},
+{c:"important",l:1,t:"choice",q:"電気工作で、はんだ付けをするときに使うものは？",o:["ニッパー","ワイヤーストリッパー","はんだごて","固定抵抗器"],a:2,e:"はんだごてを使ってはんだを溶かし、部品を接合する。"},
+{c:"basic",l:2,t:"choice",q:"トランジスタの主なはたらきとして適切なのは？",o:["電流を増幅したりスイッチの役割をしたりする","電気を光に変える","抵抗値を色で表示する","電気をためる"],a:0,e:"トランジスタは電流の増幅やスイッチングに使われる。"},
+{c:"basic",l:1,t:"choice",q:"色の帯で抵抗値を表す電子部品は何？",o:["固定抵抗器","トランジスタ","電解コンデンサー","フルカラーLED"],a:0,e:"固定抵抗器には色の帯があり、その色の組み合わせで抵抗値を表す。"},
+{c:"basic",l:1,t:"choice",q:"電流を増幅したり、スイッチの役割をしたりする電子部品は何？",o:["セラミックコンデンサー","トランジスタ","固定抵抗器","フルカラーLED"],a:1,e:"トランジスタは電流の増幅やスイッチングに使われる。"},
+{c:"basic",l:1,t:"choice",q:"＋と−の向き（極性）に注意して取り付けるコンデンサーは何？",o:["電解コンデンサー","固定抵抗器","ニッパー","LED"],a:0,e:"電解コンデンサーには極性があるため、＋と−を逆にしないように取り付ける。"},
+{c:"basic",l:1,t:"choice",q:"一般に、極性を気にせず取り付けられるコンデンサーの一種は何？",o:["トランジスタ","セラミックコンデンサー","フルカラーLED","固定抵抗器"],a:1,e:"セラミックコンデンサーは基本的に極性がない。"},
+{c:"basic",l:1,t:"choice",q:"複数の色で光らせることができる発光部品は何？",o:["電解コンデンサー","固定抵抗器","フルカラーLED","セラミックコンデンサー"],a:2,e:"フルカラーLEDは複数の色で発光できる。LEDには極性がある。"},
+{c:"basic",l:1,t:"choice",q:"電線や電子部品の足などを切るときに使う工具は何？",o:["ニッパー","ワイヤーストリッパー","はんだごて","ドライバー"],a:0,e:"ニッパーは電線や電子部品の足などを切る工具。"},
+{c:"basic",l:1,t:"choice",q:"電線の外側をおおっている被覆をむく工具は何？",o:["はんだごて","ワイヤーストリッパー","ニッパー","ペンチ"],a:1,e:"ワイヤーストリッパーは電線の被覆をむく工具。"},
+{c:"basic",l:1,t:"choice",q:"はんだを溶かして電子部品などを接合するときに使う工具は何？",o:["ニッパー","ワイヤーストリッパー","はんだごて","ドライバー"],a:2,e:"はんだごての先端を熱して、はんだを溶かし接合する。"},
+{c:"basic",l:2,t:"choice",q:"セラミックコンデンサーは、どの種類の電子部品？",o:["抵抗器","コンデンサー","トランジスタ","発光ダイオード"],a:1,e:"セラミックコンデンサーはコンデンサーの一種。"},
+{c:"applied",l:3,t:"choice",q:"電力が同じなら、電圧を高くしたとき電流はどうなる？",o:["大きくなる","小さくなる","必ず0Aになる","変化しない"],a:1,e:"電力が一定なら、電圧が高いほど電流は小さくなる。"},
+{c:"applied",l:3,t:"choice",q:"同じ電圧で使う電気製品を比べるとき、電力が大きい製品ほど一般にどうなる？",o:["流れる電流が大きい","流れる電流が小さい","電流が必ず一定になる","交流が直流になる"],a:0,e:"同じ電圧なら、電力が大きいほど流れる電流も大きい。"},
+{c:"important",l:3,t:"choice",q:"電気製品をテーブルタップにつなぐ際、最も適切な確認方法は？",o:["機器の台数だけを確認する","合計消費電力や電流を確認し、定格内で使う","一度に全部つないで様子を見る","コードの長さだけを確認する"],a:1,e:"台数ではなく、機器の消費電力・電流とタップの定格を確認する。"}
+];
+const hardBank=[
+{c:"basic",l:2,q:"電気の流れを何という？",a:["電流"],e:"電気の流れを電流という。"},
+{c:"basic",l:2,q:"電流の単位を、カタカナで答えなさい。",a:["アンペア"],e:"電流の単位はアンペア（A）。"},
+{c:"basic",l:2,q:"電流を押し流すはたらきをするものを何という？",a:["電圧"],e:"電圧の単位はボルト（V）。"},
+{c:"basic",l:2,q:"電圧の単位を、カタカナで答えなさい。",a:["ボルト"],e:"電圧の単位はボルト（V）。"},
+{c:"basic",l:2,q:"向きが時間とともに変化する電流を何という？",a:["交流"],e:"向きが時間とともに変化する電流は交流。"},
+{c:"basic",l:2,q:"一定の向きに流れる電流を何という？",a:["直流"],e:"一定の向きに流れる電流は直流。"},
+{c:"basic",l:3,q:"半田をつくる2種類の金属を答えなさい。",a:["すずと鉛","鉛とすず"],e:"半田は、すずと鉛を主成分とする合金。"},
+{c:"basic",l:3,q:"電線の被覆をむく工具の名前を答えなさい。",a:["ワイヤーストリッパー","ストリッパー"],e:"ワイヤーストリッパーを使う。"},
+{c:"basic",l:3,q:"電線などを切る工具の名前を答えなさい。",a:["ニッパー"],e:"切断にはニッパーを使う。"},
+{c:"basic",l:3,q:"はんだ付けに使う工具の名前を答えなさい。",a:["はんだごて","半田ごて"],e:"はんだごてを使う。"},
+{c:"basic",l:3,q:"抵抗器の色の帯は何を表している？",a:["抵抗値"],e:"色の帯から抵抗値を読み取る。"},
+{c:"basic",l:3,q:"＋と−の極性があるコンデンサーの名称を答えなさい。",a:["電解コンデンサー"],e:"電解コンデンサーには極性がある。"},
+{c:"basic",l:3,q:"極性が基本的にないコンデンサーの一種を答えなさい。",a:["セラミックコンデンサー"],e:"セラミックコンデンサーは基本的に極性がない。"},
+{c:"basic",l:3,q:"複数の色で発光できるLEDの名称を答えなさい。",a:["フルカラーLED","led","フルカラー発光ダイオード"],e:"フルカラーLEDは複数の色で発光できる。"},
+{c:"basic",l:3,q:"電線や部品の足を切る工具の名称を答えなさい。",a:["ニッパー"],e:"切断にはニッパーを使う。"},
+{c:"basic",l:3,q:"電線の被覆をむく工具の名称を答えなさい。",a:["ワイヤーストリッパー","ストリッパー"],e:"ワイヤーストリッパーを使う。"},
+{c:"basic",l:3,q:"小さな部品をつかんだり、電線を曲げたりする工具の名称を答えなさい。",a:["ラジオペンチ"],e:"ラジオペンチは細かい作業に使う。"},
+{c:"basic",l:3,q:"一つのコンセントからテーブルタップなどを使い、多くの電気製品をつなぐことを何という？",a:["たこ足配線","タコ足配線"],e:"この接続方法をたこ足配線という。"},
+
+{c:"basic",l:3,q:"小さな部品をつかんだり、電線を曲げたりする工具の名称を答えなさい。",a:["ラジオペンチ"],e:"先端が細いラジオペンチは、細かい作業に使う。"},
+{c:"basic",l:3,q:"一つのコンセントからテーブルタップなどを使い、多くの電気製品をつなぐことを何という？",a:["たこ足配線","タコ足配線"],e:"このような接続方法をたこ足配線という。"},
+{c:"basic",l:3,q:"たこ足配線で、つないだ機器について確認する必要があるものは？",a:["合計消費電力","消費電力","合計電力","合計電流","電流"],e:"機器の合計消費電力や電流が、テーブルタップの定格を超えないか確認する。"},
+
+{c:"basic",l:3,q:"はんだを溶かして接合するときに使う工具の名称を答えなさい。",a:["はんだごて","半田ごて"],e:"はんだごてを使う。"},
+{c:"basic",l:3,q:"電解コンデンサーを取り付けるときに注意するものは？",a:["極性","プラスマイナス","＋と－"],e:"電解コンデンサーには極性がある。"},
+{c:"applied",l:3,q:"家庭用コンセントの電流の種類を答えなさい。",a:["交流"],e:"家庭用コンセントは交流。"},
+{c:"applied",l:3,q:"日本の一般的な家庭用コンセントの電圧は何V？",a:["100","100v","100Ｖ"],e:"一般的な家庭用コンセントは100V。"},
+{c:"applied",l:3,q:"自然界の電気を有効利用しにくい理由を簡潔に説明しなさい。",a:["安定して得られない","発生する場所や量を調整できない","発生する時間や量を調整しにくい","発生する場所や時間を調整しにくい"],e:"自然現象の電気は、発生する場所・時間・量を制御しにくく、安定して利用しづらい。",loose:true},
+{c:"important",l:3,q:"電気をつくることを何という？",a:["発電"],e:"電気をつくることを発電という。"},
+{c:"important",l:3,q:"電気製品を同時に使いすぎると、どのような危険がある？",a:["ブレーカーが落ちる","ブレーカーが作動する","火災","発熱","過電流"],e:"許容電流を超えると、ブレーカーが作動したり、発熱・火災につながったりする。",loose:true},
+{c:"applied",l:4,q:"家庭で電気料金を安く抑えるため、社会全体でできる解決策を一つ答えなさい。",a:["省エネ","節電","省エネルギー","省エネ家電を普及させる","再生可能エネルギーを活用する"],e:"省エネルギー機器の普及や社会全体での節電などが考えられる。",loose:true},
+{c:"important",l:4,q:"電流の単位記号を答えなさい。",a:["a"],e:"電流の単位記号はA。"},
+{c:"important",l:4,q:"電圧の単位記号を答えなさい。",a:["v"],e:"電圧の単位記号はV。"},
+{c:"important",l:4,q:"電力の単位記号を答えなさい。",a:["w"],e:"電力の単位記号はW。"}
+];
+let settings={category:"basic",difficulty:"normal",mode:"normal",count:"10"},queue=[],index=0,score=0,streak=0,answered=false,history=[],timeLeft=60,tick=null,calcExpr="",calcFresh=true;
+const $=id=>document.getElementById(id);
+document.querySelectorAll(".choices").forEach(group=>group.addEventListener("click",e=>{let b=e.target.closest("button[data-value]");if(!b)return;group.querySelectorAll("button").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");settings[group.dataset.group]=b.dataset.value;updateAvailable()}));
+function matches(q){if(settings.category==="both")return q.c==="basic"||q.c==="applied";return q.c===settings.category}
+function getPool(){return (settings.difficulty==="hard"?hardBank:bank).filter(matches)}
+function updateAvailable(){
+ const calcBtn=document.querySelector('[data-group="category"] [data-value="calculation"]');
+ calcBtn.disabled=settings.difficulty==="hard";
+ calcBtn.title=settings.difficulty==="hard"?"ハードでは計算問題は出題されません。":"";
+ if(settings.difficulty==="hard"&&settings.category==="calculation"){
+  settings.category="basic";
+  document.querySelectorAll('[data-group="category"] .choice').forEach(b=>b.classList.toggle("selected",b.dataset.value==="basic"));
+ }
+ let n=getPool().length;
+ $("available").textContent=`この設定で出題できる問題：${n}問`;
+ $("available").style.color=n<Number(settings.count)&&settings.count!=="all"?"var(--gold)":"var(--muted)";
+}
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function startGame(){let pool=shuffle(getPool());if(!pool.length){alert("この設定で出題できる問題がありません。");return}let n=settings.count==="all"?pool.length:Number(settings.count);queue=pool.slice(0,Math.min(n,pool.length));index=0;score=0;streak=0;history=[];timeLeft=60;clearInterval(tick);$("setup").classList.remove("active");$("result").classList.remove("active");$("game").classList.add("active");$("homeBtn").style.display="block";$("timerBox").style.display=settings.mode==="time"?"block":"none";if(settings.mode==="time"){tick=setInterval(()=>{timeLeft--;$("timer").textContent=timeLeft;if(timeLeft<=0){clearInterval(tick);finish(true)}},1000)}renderQuestion()}
+function renderQuestion(){answered=false;let q=queue[index];$("counter").textContent=`${index+1} / ${queue.length}`;$("score").textContent=score;$("streak").textContent=streak;$("progressBar").style.width=(index/queue.length*100)+"%";$("qCategory").textContent=({basic:"基礎",applied:"応用",calculation:"計算",important:"重要"})[q.c];$("qLevel").textContent=settings.difficulty==="hard"?["","", "中級","上級","エキスパート"][q.l]||"上級":(["","初級","中級","上級","上級"][q.l]||"初級");$("qType").textContent=settings.difficulty==="hard"?"記述問題":"選択問題";$("question").textContent=q.q;$("promptExtra").textContent=q.c==="calculation"?"計算して答えを選ぼう。":"";$("feedback").className="feedback";$("feedback").innerHTML="";$("nextBtn").style.display="none";$("progressHint").textContent=settings.mode==="survival"?"不正解・スキップでゲーム終了！":"答えを選ぼう。";$("choiceArea").innerHTML="";$("textArea").style.display=settings.difficulty==="hard"?"block":"none";$("choiceArea").style.display=settings.difficulty==="hard"?"none":"grid";$("typed").value="";resetCalc();
+ if(settings.difficulty==="normal"){shuffle(q.o.map((v,i)=>({v,i}))).forEach((x,k)=>{let b=document.createElement("button");b.className="answer";b.innerHTML=`<span class="letter">${"ABCD"[k]}</span><span>${x.v}</span>`;b.onclick=()=>choose(x.i,b);$("choiceArea").appendChild(b)})}
+ if(settings.difficulty==="hard"){$("typed").focus()}
+}
+function choose(original,b){if(answered)return;answered=true;let q=queue[index],ok=original===q.a;document.querySelectorAll(".answer").forEach(x=>x.disabled=true);b.classList.add(ok?"correct":"wrong");let correctLabel=q.o[q.a];if(!ok){[...$("choiceArea").children].forEach(el=>{if(el.textContent.includes(correctLabel))el.classList.add("correct")})}grade(ok,q.e,`${correctLabel}`)}
+function normalize(s){return s.toLowerCase().replace(/[ 　\t。、．,，・]/g,"").replace(/[Ａ-Ｚａ-ｚ０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0))}
+function submitTyped(){if(answered)return;let q=queue[index],v=normalize($("typed").value);if(!v){$("typed").focus();return}let accepted=q.a.map(normalize),ok=accepted.some(a=>v===a);if(q.loose)ok=accepted.some(a=>v.includes(a)||a.includes(v));answered=true;grade(ok,q.e,`解答例：${q.a[0]}`)}
+function grade(ok,explanation,answer){if(ok){score++;streak++}else streak=0;$("score").textContent=score;$("streak").textContent=streak;let f=$("feedback");f.className="feedback show "+(ok?"good":"bad");f.innerHTML=`<strong>${ok?"✓ 正解！":"✕ 不正解"}</strong>${ok?"":"正答："+answer+"<br>"}${explanation}`;history.push({q:queue[index].q,ok,answer,explanation});$("nextBtn").style.display="inline-block";$("progressHint").textContent=ok?"その調子！":"解説を確認しよう。";if(settings.mode==="survival"&&!ok){$("nextBtn").textContent="結果を見る";$("nextBtn").onclick=()=>finish(false)}}
+function submitSkip(){ }
+function skipQuestion(){if(settings.mode==="survival"){finish(false);return}if(answered){nextQuestion();return}answered=true;let q=queue[index];history.push({q:q.q,ok:false,answer:settings.difficulty==="normal"?q.o[q.a]:q.a[0],explanation:q.e,skip:true});streak=0;$("streak").textContent=0;$("feedback").className="feedback show bad";$("feedback").innerHTML=`<strong>スキップ</strong>正答：${settings.difficulty==="normal"?q.o[q.a]:q.a[0]}<br>${q.e}`;$("nextBtn").style.display="inline-block"}
+function nextQuestion(){if(!answered)return;if(settings.mode==="survival"&&!history[history.length-1].ok){finish(false);return}index++;if(index>=queue.length){finish(false);return}renderQuestion()}
+function finish(timeout){clearInterval(tick);$("game").classList.remove("active");$("result").classList.add("active");$("homeBtn").style.display="none";$("progressBar").style.width="100%";let total=history.length,percent=total?Math.round(score/total*100):0;$("resultTitle").textContent=timeout?"タイムアップ！":settings.mode==="survival"?"サバイバル終了！":"チャレンジ終了！";$("finalScore").textContent=`${score} / ${total}`;$("resultText").textContent=`正答率 ${percent}%　・　連続正解 ${streak}問`+(timeout?"　時間切れです。":"");$("review").innerHTML="<h3>今回の振り返り</h3>"+history.map((h,i)=>`<div class="review-item"><b>${i+1}. ${h.ok?"✓":"✕"} ${h.q}</b><br><small>${h.skip?"スキップ / ":""}${h.explanation}</small></div>`).join("")}
+function goHome(){clearInterval(tick);$("game").classList.remove("active");$("result").classList.remove("active");$("setup").classList.add("active");$("homeBtn").style.display="none";updateAvailable()}
+function resetCalc(){calcExpr="";calcFresh=true;$("calcDisplay").textContent="0"}
+function calcInput(x){if(x==="AC"){resetCalc();return}if(x==="⌫"){calcExpr=calcExpr.slice(0,-1);$("calcDisplay").textContent=calcExpr||"0";return}if(x==="="){try{let exp=calcExpr.replace(/×/g,"*").replace(/÷/g,"/").replace(/%/g,"/100");if(!/^[0-9.+\-*/() ]+$/.test(exp))throw 0;let val=Function('"use strict";return ('+exp+')')();if(!Number.isFinite(val))throw 0;calcExpr=String(Number(val.toFixed(8)));$("calcDisplay").textContent=calcExpr;calcFresh=true}catch(e){$("calcDisplay").textContent="Error";calcExpr="";calcFresh=true}return}if(calcFresh&&/[0-9.]/.test(x)){calcExpr="";calcFresh=false}calcExpr+=x;$("calcDisplay").textContent=calcExpr}
+document.addEventListener("keydown",e=>{if(!$("game").classList.contains("active"))return;if(e.key==="Enter"){if(settings.difficulty==="hard"&&!answered)submitTyped();else if(answered)nextQuestion();e.preventDefault();return}if(settings.difficulty==="hard"&&document.activeElement===$("typed"))return;let k=e.key;if(/[0-9.+\-*/%]/.test(k)){calcInput(k==="*"?"×":k==="/"?"÷":k);e.preventDefault()}else if(k==="Backspace"){calcInput("⌫");e.preventDefault()}else if(k==="Escape"){calcInput("AC");e.preventDefault()}})
+updateAvailable();
+</script>
+</body>
+</html>
